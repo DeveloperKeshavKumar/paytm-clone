@@ -1,4 +1,5 @@
 const Account = require('../models/account.model.js');
+const mongoose = require('mongoose');
 const zod = require('zod');
 
 module.exports.getBalance = async (req, res, next) => {
@@ -16,6 +17,9 @@ const TransferFundBody = zod.object({
 });
 
 module.exports.transferFund = async (req, res, next) => {
+    
+    const session = await mongoose.startSession();
+
     try {
 
         const result = TransferFundBody.safeParse(req.body);
@@ -25,30 +29,40 @@ module.exports.transferFund = async (req, res, next) => {
 
         const { amountToTransfer, receiverId } = req.body;
 
-        const receiverAccount = await Account.findOne({ userId: receiverId });
-        if (!receiverAccount) {
-            return res.status(400).json({ message: "Invalid account" });
+        if (receiverId === req.userId) {
+            return res.status(400).json({ message: "Cannot transfer to self" });
         }
 
-        const senderAccount = await Account.findOne({ userId: req.userId });
-        if (senderAccount.balance < amountToTransfer) {
+        session.startTransaction();
+
+        const receiverAccount = await Account.findOne({ userId: receiverId }).session(session);
+        if (!receiverAccount) {
+            await session.abortTransaction();
+            return res.status(400).json({ message: "Invalid receiver account" });
+        }
+
+        const senderAccount = await Account.findOne({ userId: req.userId }).session(session);
+        if (!senderAccount || senderAccount.balance < amountToTransfer) {
+            await session.abortTransaction();
             return res.status(400).json({ message: "Insufficient balance" });
         }
 
         const senderUpdate = await Account.updateOne(
             { userId: req.userId },
             { $inc: { balance: -amountToTransfer } }
-        );
+        ).session(session);
 
         const receiverUpdate = await Account.updateOne(
             { userId: receiverId },
             { $inc: { balance: amountToTransfer } }
-        );
+        ).session(session);
 
         if (senderUpdate.modifiedCount === 0 || receiverUpdate.modifiedCount === 0) {
+            await session.abortTransaction();
             return res.status(400).json({ message: "Transaction failed" });
         }
 
+        await session.commitTransaction();
         const updatedSenderAccount = await Account.findOne({ userId: req.userId });
 
         return res.status(200).json({
@@ -57,6 +71,10 @@ module.exports.transferFund = async (req, res, next) => {
         });
 
     } catch (error) {
+        await session.abortTransaction();
         next(error);
+    }
+    finally{
+        session.endSession();
     }
 }
