@@ -1,4 +1,5 @@
 const User = require('../models/user.model.js');
+const Account = require('../models/account.model.js')
 const jwt = require('jsonwebtoken');
 const zod = require('zod');
 
@@ -26,6 +27,11 @@ module.exports.signUp = async (req, res, next) => {
         const passwordHash = await User.createHash(password);
 
         const user = await User.create({ name, email, password: passwordHash });
+
+        await Account.create({
+            userId:user._id,
+            balance: 1 + Math.random() * 10000
+        })
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
@@ -136,7 +142,8 @@ module.exports.getAllUsers = async (req, res, next) => {
             message: "All users fetched",
             users: users.map(user => ({
                 email: user.email,
-                name: user.name
+                name: user.name,
+                id:user._id
             }))
         })
     } catch (error) {

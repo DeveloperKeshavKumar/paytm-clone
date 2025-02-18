@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const accountsSchema = new mongoose.Schema({
+const accountSchema = new mongoose.Schema({
     userId:{
         type:mongoose.Types.ObjectId,
         ref:'User',
@@ -13,4 +13,4 @@ const accountsSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('account', accountsSchema);
+module.exports = mongoose.model('account', accountSchema);
