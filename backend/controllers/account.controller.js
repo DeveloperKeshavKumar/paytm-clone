@@ -1,11 +1,12 @@
 const Account = require('../models/account.model.js');
+const Transaction = require('../models/transaction.model.js');
 const mongoose = require('mongoose');
 const zod = require('zod');
 
 module.exports.getBalance = async (req, res, next) => {
     try {
         const account = await Account.findOne({ userId: req.userId });
-        return res.status(200).json({ message: "Balance fetched resfully", balance: account.balance });
+        return res.status(200).json({ message: "Balance fetched successfully", balance: account.balance });
     } catch (error) {
         next(error);
     }
@@ -62,19 +63,30 @@ module.exports.transferFund = async (req, res, next) => {
             return res.status(400).json({ message: "Transaction failed" });
         }
 
+        // Create transaction record
+        const transaction = new Transaction({
+            senderId: req.userId,
+            receiverId: receiverId,
+            amount: amountToTransfer,
+            status: 'completed'
+        });
+
+        await transaction.save({ session });
+
         await session.commitTransaction();
         const updatedSenderAccount = await Account.findOne({ userId: req.userId });
 
         return res.status(200).json({
             message: "Transaction done successfully",
-            balance: updatedSenderAccount.balance
+            balance: updatedSenderAccount.balance,
+            transactionId: transaction._id
         });
 
     } catch (error) {
         await session.abortTransaction();
         next(error);
     }
-    finally{
+    finally {
         session.endSession();
     }
 }

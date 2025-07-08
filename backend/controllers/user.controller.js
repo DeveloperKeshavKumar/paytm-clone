@@ -14,7 +14,7 @@ module.exports.signUp = async (req, res, next) => {
         const result = SignUpBody.safeParse(req.body);
 
         if (!result.success) {
-            return res.status(411).json({ message: "Incorrect inputs" });
+            return res.status(411).json({ message: "Incorrect inputs", error: result.error });
         }
 
         const { name, email, password } = req.body;
@@ -29,7 +29,7 @@ module.exports.signUp = async (req, res, next) => {
         const user = await User.create({ name, email, password: passwordHash });
 
         await Account.create({
-            userId:user._id,
+            userId: user._id,
             balance: 1 + Math.random() * 10000
         })
 
@@ -54,8 +54,6 @@ module.exports.signIn = async (req, res, next) => {
         if (!result.success) {
             return res.status(411).json({ message: "Invalid inputs" });
         }
-
-        console.log(result);
 
         const { email, password } = req.body;
 
@@ -143,7 +141,7 @@ module.exports.getAllUsers = async (req, res, next) => {
             users: users.map(user => ({
                 email: user.email,
                 name: user.name,
-                id:user._id
+                id: user._id
             }))
         })
     } catch (error) {
