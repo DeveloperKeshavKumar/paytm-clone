@@ -8,6 +8,11 @@ export const userEndpoints = {
 }
 
 export const accountEndpoints = {
-    GET_BALANCE : URL+'/account/balance',
-    TRANSFER_FUND : URL+'/account/transfer'
+    GET_BALANCE: URL + '/account/balance',
+    TRANSFER_FUND: URL + '/account/transfer'
 }
+
+export const transactionEndpoints = {
+    GET_HISTORY: URL + '/transaction/history',
+    GET_BY_ID: URL + '/transaction',
+};
