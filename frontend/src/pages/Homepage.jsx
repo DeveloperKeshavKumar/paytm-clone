@@ -14,8 +14,8 @@ export const Homepage = () => {
     }, [navigate]);
 
     return (
-        <div className="relative min-h-screen bg-gradient-to-br from-purple-700 via-white to-blue-400 text-gray-800 overflow-hidden font-light">
-            <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="relative min-h-screen bg-gradient-to-br from-purple-700 via-white to-blue-400 text-gray-800 font-light">
+            <div className="absolute inset-0 pointer-events-none z-0">
                 {/* Fixed SVG background pattern */}
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgNDBoNDBWMHoiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgwLDAsMCwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] opacity-20"></div>
 
@@ -36,7 +36,7 @@ export const Homepage = () => {
                 ))}
             </div>
 
-            <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[95%] max-w-6xl rounded-2xl overflow-hidden shadow-2xl">
+            <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[95%] max-w-6xl rounded-2xl shadow-2xl">
                 <div className="bg-gradient-to-br from-blue-100 via-white to-purple-200 border border-white/20 backdrop-blur-xl">
                     <div className="px-6 lg:px-8">
                         <div className="flex h-16 items-center justify-between">
@@ -72,12 +72,12 @@ export const Homepage = () => {
                 </div>
 
                 {menuOpen && (
-                    <div className="lg:hidden bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl shadow-black/10 overflow-hidden mt-2">
+                    <div className="lg:hidden bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl shadow-black/10 mt-2">
                         <div className="px-6 py-4 space-y-2">
                             <div className="pt-2 mt-2 border-t border-white/20 space-y-2">
                                 <Link
                                     to="/signin"
-                                    className="block px-4 py-3 rounded-xl font-medium text-sm text-gray-700 hover:bg-white/10 hover:text-blue-600 transition-all duration-300"
+                                    className="block px-4 py-3 rounded-xl font-medium text-sm text-gray-200 hover:bg-white/10 transition-all duration-300"
                                     onClick={() => setMenuOpen(false)}
                                 >
                                     Sign In
@@ -103,10 +103,10 @@ export const Homepage = () => {
                             Free.
                         </span>
                     </h1>
-                    <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                    <p className="text-lg text-gray-800 mb-8 max-w-2xl mx-auto">
                         Get started with a random balance and start trading instantly with friends.
                     </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-4">
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link to="/signup">
                             <button className="px-8 py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center gap-2">
                                 Get Started <ArrowRight className="h-4 w-4" />
